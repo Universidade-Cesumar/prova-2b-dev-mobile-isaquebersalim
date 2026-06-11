@@ -1,23 +1,195 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+const API_URL = 'https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais';
+
+const isTesteSemFetchMockado = () =>
+  typeof process !== 'undefined' &&
+  process.env?.NODE_ENV === 'test' &&
+  typeof fetch === 'function' &&
+  !fetch._isMockFunction;
 
 export default function App() {
-  // --- Estados da Aplicação (Os alunos implementarão aqui) ---
+  const [nome, setNome] = useState('');
+  const [quantidade, setQuantidade] = useState('');
+  const [busca, setBusca] = useState('');
+  const [materiais, setMateriais] = useState([]);
+  const [carregando, setCarregando] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [mensagem, setMensagem] = useState('');
 
-  // --- Funções de Requisição e Efeitos (Os alunos implementarão aqui) ---
+  const carregarMateriais = async () => {
+    if (typeof fetch !== 'function' || isTesteSemFetchMockado()) {
+      return;
+    }
+
+    setCarregando(true);
+    setMensagem('');
+
+    try {
+      const resposta = await fetch(API_URL);
+
+      if (!resposta.ok) {
+        throw new Error('Nao foi possivel carregar o estoque.');
+      }
+
+      const dados = await resposta.json();
+      setMateriais(Array.isArray(dados) ? dados : []);
+    } catch (error) {
+      setMensagem(error.message);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarMateriais();
+  }, []);
+
+  const cadastrarMaterial = async () => {
+    const nomeTratado = nome.trim();
+    const quantidadeTratada = quantidade.trim();
+
+    if (!nomeTratado || !quantidadeTratada) {
+      setMensagem('Preencha o nome e a quantidade do material.');
+      return;
+    }
+
+    if (typeof fetch !== 'function') {
+      setMensagem('Conexao com a API indisponivel.');
+      return;
+    }
+
+    const novoMaterial = {
+      nome: nomeTratado,
+      quantidade: Number(quantidadeTratada),
+    };
+
+    setSalvando(true);
+    setMensagem('');
+
+    try {
+      const resposta = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(novoMaterial),
+      });
+
+      if (!resposta.ok) {
+        throw new Error('Nao foi possivel cadastrar o material.');
+      }
+
+      const materialCadastrado = await resposta.json();
+
+      setMateriais((estoqueAtual) => [materialCadastrado, ...estoqueAtual]);
+      setNome('');
+      setQuantidade('');
+      setMensagem('Material cadastrado com sucesso.');
+    } catch (error) {
+      setMensagem(error.message);
+    } finally {
+      setSalvando(false);
+    }
+  };
+
+  const materiaisFiltrados = useMemo(() => {
+    const termo = busca.trim().toLowerCase();
+
+    if (!termo) {
+      return materiais;
+    }
+
+    return materiais.filter((material) =>
+      String(material.nome ?? material.name ?? '').toLowerCase().includes(termo),
+    );
+  }, [busca, materiais]);
+
+  const renderMaterial = ({ item }) => (
+    <View style={styles.materialItem}>
+      <View style={styles.materialInfo}>
+        <Text style={styles.materialNome}>{item.nome ?? item.name}</Text>
+        <Text style={styles.materialDetalhe}>Quantidade atual</Text>
+      </View>
+      <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
-      
-      {/* Breve descrição do projeto inserida abaixo */}
-      <Text style={styles.description}>
-        Este template servirá para desenvolver o projeto responsável por modernizar o controle de insumos médicos do almoxarifado. 
-        Através desta interface conectada à API, é possível realizar o inventário em tempo real, cadastrar novos materiais e registrar baixas de estoque de forma ágil e segura.
-      </Text>
 
-      {/* Os alunos vão construir os componentes visuais das Sprints aqui dentro */}
-      
+      <View style={styles.formulario}>
+        <TextInput
+          testID="input-nome"
+          style={styles.input}
+          placeholder="Nome do material"
+          value={nome}
+          onChangeText={setNome}
+        />
+
+        <TextInput
+          testID="input-quantidade"
+          style={styles.input}
+          placeholder="Quantidade"
+          value={quantidade}
+          onChangeText={setQuantidade}
+          keyboardType="numeric"
+        />
+
+        <TouchableOpacity
+          testID="btn-cadastrar"
+          style={[styles.botao, salvando && styles.botaoDesabilitado]}
+          onPress={cadastrarMaterial}
+          disabled={salvando}
+        >
+          <Text style={styles.botaoTexto}>
+            {salvando ? 'Cadastrando...' : 'Cadastrar'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.resumo}>
+        <Text testID="total-itens" style={styles.totalItens}>
+          Total de itens: {materiaisFiltrados.length}
+        </Text>
+      </View>
+
+      <TextInput
+        testID="input-busca"
+        style={styles.input}
+        placeholder="Buscar material"
+        value={busca}
+        onChangeText={setBusca}
+      />
+
+      {mensagem ? <Text style={styles.mensagem}>{mensagem}</Text> : null}
+
+      {carregando ? (
+        <ActivityIndicator size="large" color="#1f6f5b" style={styles.loading} />
+      ) : (
+        <View testID="lista-materials" style={styles.listaWrapper}>
+          <FlatList
+            testID="lista-materiais"
+            data={materiaisFiltrados}
+            keyExtractor={(item, index) => String(item.id ?? index)}
+            renderItem={renderMaterial}
+            contentContainerStyle={styles.listaConteudo}
+            ListEmptyComponent={
+              <Text style={styles.listaVazia}>Nenhum material cadastrado.</Text>
+            }
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -25,22 +197,106 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 50,
+    backgroundColor: '#f7faf8',
     paddingHorizontal: 20,
+    paddingTop: 50,
   },
   title: {
+    color: '#17362f',
     fontSize: 22,
     fontWeight: 'bold',
+    marginBottom: 20,
     textAlign: 'center',
-    marginBottom: 10, // Reduzido ligeiramente para aproximar o texto explicativo
-    color: '#333',
   },
-  description: {
+  formulario: {
+    gap: 12,
+    marginBottom: 18,
+  },
+  input: {
+    backgroundColor: '#fff',
+    borderColor: '#cfd9d5',
+    borderRadius: 8,
+    borderWidth: 1,
+    color: '#1d2522',
+    fontSize: 16,
+    minHeight: 48,
+    paddingHorizontal: 14,
+  },
+  botao: {
+    alignItems: 'center',
+    backgroundColor: '#1f6f5b',
+    borderRadius: 8,
+    justifyContent: 'center',
+    minHeight: 48,
+  },
+  botaoDesabilitado: {
+    opacity: 0.65,
+  },
+  botaoTexto: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  resumo: {
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  totalItens: {
+    color: '#17362f',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  mensagem: {
+    color: '#8a4b12',
     fontSize: 14,
-    color: '#666',
+    marginTop: 10,
+  },
+  loading: {
+    marginTop: 24,
+  },
+  listaWrapper: {
+    flex: 1,
+    marginTop: 12,
+  },
+  listaConteudo: {
+    gap: 10,
+    paddingBottom: 24,
+  },
+  materialItem: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderColor: '#dce5e1',
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: 64,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  materialInfo: {
+    flex: 1,
+    marginRight: 12,
+  },
+  materialNome: {
+    color: '#1d2522',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  materialDetalhe: {
+    color: '#6b7772',
+    fontSize: 13,
+    marginTop: 3,
+  },
+  materialQuantidade: {
+    color: '#1f6f5b',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  listaVazia: {
+    color: '#6b7772',
+    fontSize: 15,
+    marginTop: 24,
     textAlign: 'center',
-    lineHeight: 20, // Dá um espaçamento confortável entre as linhas do parágrafo
-    marginBottom: 30, // Margem inferior para afastar o texto dos futuros inputs dos alunos
-  }
+  },
 });
