@@ -63,6 +63,13 @@ export default function App() {
       return;
     }
 
+    const quantidadeNumerica = Number(quantidadeTratada);
+
+    if (!Number.isFinite(quantidadeNumerica) || quantidadeNumerica <= 0) {
+      setMensagem('Informe uma quantidade maior que zero.');
+      return;
+    }
+
     if (typeof fetch !== 'function') {
       setMensagem('Conexao com a API indisponivel.');
       return;
@@ -70,7 +77,7 @@ export default function App() {
 
     const novoMaterial = {
       nome: nomeTratado,
-      quantidade: Number(quantidadeTratada),
+      quantidade: quantidadeNumerica,
     };
 
     setSalvando(true);
