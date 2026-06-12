@@ -59,6 +59,9 @@ Inicie o Expo:
 npm start
 ```
 
+Para testar no celular, abra o aplicativo Expo Go e escaneie o QR Code exibido no terminal.
+O celular e o computador precisam estar conectados na mesma rede.
+
 Para executar os testes:
 
 ```bash
