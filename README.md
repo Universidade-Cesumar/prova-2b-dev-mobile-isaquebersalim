@@ -36,6 +36,15 @@ Endpoint usado no projeto:
 https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais
 ```
 
+Modelo minimo enviado no cadastro:
+
+```json
+{
+  "nome": "Seringa 10ml",
+  "quantidade": 50
+}
+```
+
 ## Como rodar
 
 Instale as dependencias:
