@@ -132,6 +132,9 @@ export default function App() {
   );
 
   const exibindoCarregamentoInicial = carregando && materiais.length === 0;
+  const mensagemListaVazia = busca.trim()
+    ? 'Nenhum material encontrado.'
+    : 'Nenhum material cadastrado.';
 
   const renderMaterial = ({ item }) => (
     <View style={styles.materialItem}>
@@ -231,7 +234,7 @@ export default function App() {
             onRefresh={carregarMateriais}
             contentContainerStyle={styles.listaConteudo}
             ListEmptyComponent={
-              <Text style={styles.listaVazia}>Nenhum material cadastrado.</Text>
+              <Text style={styles.listaVazia}>{mensagemListaVazia}</Text>
             }
           />
         </View>
