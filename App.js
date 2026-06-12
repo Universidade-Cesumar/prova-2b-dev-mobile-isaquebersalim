@@ -161,6 +161,7 @@ export default function App() {
           onChangeText={setNome}
           autoCapitalize="words"
           maxLength={60}
+          returnKeyType="next"
         />
 
         <TextInput
@@ -173,6 +174,7 @@ export default function App() {
           onChangeText={setQuantidade}
           keyboardType="numeric"
           maxLength={5}
+          returnKeyType="done"
         />
 
         <TouchableOpacity
@@ -217,6 +219,7 @@ export default function App() {
         value={busca}
         onChangeText={setBusca}
         autoCapitalize="none"
+        returnKeyType="search"
       />
 
       {mensagem ? <Text style={styles.mensagem}>{mensagem}</Text> : null}
