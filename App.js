@@ -130,6 +130,8 @@ export default function App() {
     [materiaisFiltrados],
   );
 
+  const exibindoCarregamentoInicial = carregando && materiais.length === 0;
+
   const renderMaterial = ({ item }) => (
     <View style={styles.materialItem}>
       <View style={styles.materialInfo}>
@@ -210,7 +212,7 @@ export default function App() {
 
       {mensagem ? <Text style={styles.mensagem}>{mensagem}</Text> : null}
 
-      {carregando ? (
+      {exibindoCarregamentoInicial ? (
         <ActivityIndicator size="large" color="#1f6f5b" style={styles.loading} />
       ) : (
         <View testID="lista-materials" style={styles.listaWrapper}>
@@ -219,6 +221,8 @@ export default function App() {
             data={materiaisFiltrados}
             keyExtractor={(item, index) => String(item.id ?? index)}
             renderItem={renderMaterial}
+            refreshing={carregando}
+            onRefresh={carregarMateriais}
             contentContainerStyle={styles.listaConteudo}
             ListEmptyComponent={
               <Text style={styles.listaVazia}>Nenhum material cadastrado.</Text>
