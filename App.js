@@ -148,6 +148,7 @@ export default function App() {
         <TextInput
           testID="input-nome"
           style={styles.input}
+          accessibilityLabel="Nome do material"
           placeholder="Nome do material"
           value={nome}
           onChangeText={setNome}
@@ -157,6 +158,7 @@ export default function App() {
         <TextInput
           testID="input-quantidade"
           style={styles.input}
+          accessibilityLabel="Quantidade do material"
           placeholder="Quantidade"
           value={quantidade}
           onChangeText={setQuantidade}
@@ -167,6 +169,7 @@ export default function App() {
         <TouchableOpacity
           testID="btn-cadastrar"
           style={[styles.botao, salvando && styles.botaoDesabilitado]}
+          accessibilityLabel="Cadastrar material"
           onPress={cadastrarMaterial}
           disabled={salvando}
         >
@@ -188,6 +191,7 @@ export default function App() {
 
         <TouchableOpacity
           style={styles.botaoAtualizar}
+          accessibilityLabel="Atualizar estoque"
           onPress={carregarMateriais}
           disabled={carregando}
         >
@@ -198,6 +202,7 @@ export default function App() {
       <TextInput
         testID="input-busca"
         style={styles.input}
+        accessibilityLabel="Buscar material"
         placeholder="Buscar material"
         value={busca}
         onChangeText={setBusca}
