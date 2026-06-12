@@ -160,6 +160,7 @@ export default function App() {
           value={nome}
           onChangeText={setNome}
           autoCapitalize="words"
+          autoCorrect={false}
           maxLength={60}
           returnKeyType="next"
         />
@@ -219,6 +220,7 @@ export default function App() {
         value={busca}
         onChangeText={setBusca}
         autoCapitalize="none"
+        autoCorrect={false}
         returnKeyType="search"
       />
 
