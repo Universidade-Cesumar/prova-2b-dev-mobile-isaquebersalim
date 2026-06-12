@@ -151,6 +151,7 @@ export default function App() {
           placeholder="Nome do material"
           value={nome}
           onChangeText={setNome}
+          maxLength={60}
         />
 
         <TextInput
@@ -160,6 +161,7 @@ export default function App() {
           value={quantidade}
           onChangeText={setQuantidade}
           keyboardType="numeric"
+          maxLength={5}
         />
 
         <TouchableOpacity
