@@ -175,10 +175,22 @@ export default function App() {
       </View>
 
       <View style={styles.resumo}>
-        <Text testID="total-itens" style={styles.totalItens}>
-          Total de itens: {materiaisFiltrados.length}
-        </Text>
-        <Text style={styles.totalUnidades}>Unidades em estoque: {totalUnidades}</Text>
+        <View>
+          <Text testID="total-itens" style={styles.totalItens}>
+            Total de itens: {materiaisFiltrados.length}
+          </Text>
+          <Text style={styles.totalUnidades}>
+            Unidades em estoque: {totalUnidades}
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.botaoAtualizar}
+          onPress={carregarMateriais}
+          disabled={carregando}
+        >
+          <Text style={styles.botaoAtualizarTexto}>Atualizar</Text>
+        </TouchableOpacity>
       </View>
 
       <TextInput
@@ -255,7 +267,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   resumo: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   totalItens: {
@@ -267,6 +281,18 @@ const styles = StyleSheet.create({
     color: '#4f5f59',
     fontSize: 14,
     marginTop: 4,
+  },
+  botaoAtualizar: {
+    borderColor: '#1f6f5b',
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  botaoAtualizarTexto: {
+    color: '#1f6f5b',
+    fontSize: 14,
+    fontWeight: '600',
   },
   mensagem: {
     color: '#8a4b12',
