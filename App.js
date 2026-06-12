@@ -121,6 +121,15 @@ export default function App() {
     );
   }, [busca, materiais]);
 
+  const totalUnidades = useMemo(
+    () =>
+      materiaisFiltrados.reduce(
+        (total, material) => total + Number(material.quantidade ?? 0),
+        0,
+      ),
+    [materiaisFiltrados],
+  );
+
   const renderMaterial = ({ item }) => (
     <View style={styles.materialItem}>
       <View style={styles.materialInfo}>
@@ -169,6 +178,7 @@ export default function App() {
         <Text testID="total-itens" style={styles.totalItens}>
           Total de itens: {materiaisFiltrados.length}
         </Text>
+        <Text style={styles.totalUnidades}>Unidades em estoque: {totalUnidades}</Text>
       </View>
 
       <TextInput
@@ -252,6 +262,11 @@ const styles = StyleSheet.create({
     color: '#17362f',
     fontSize: 15,
     fontWeight: '600',
+  },
+  totalUnidades: {
+    color: '#4f5f59',
+    fontSize: 14,
+    marginTop: 4,
   },
   mensagem: {
     color: '#8a4b12',
