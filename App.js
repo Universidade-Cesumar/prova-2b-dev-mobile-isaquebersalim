@@ -156,6 +156,7 @@ export default function App() {
           placeholderTextColor={PLACEHOLDER_COLOR}
           value={nome}
           onChangeText={setNome}
+          autoCapitalize="words"
           maxLength={60}
         />
 
@@ -212,6 +213,7 @@ export default function App() {
         placeholderTextColor={PLACEHOLDER_COLOR}
         value={busca}
         onChangeText={setBusca}
+        autoCapitalize="none"
       />
 
       {mensagem ? <Text style={styles.mensagem}>{mensagem}</Text> : null}
