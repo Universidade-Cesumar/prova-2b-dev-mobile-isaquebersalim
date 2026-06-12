@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 const API_URL = 'https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais';
+const PLACEHOLDER_COLOR = '#7c8984';
 
 const isTesteSemFetchMockado = () =>
   typeof process !== 'undefined' &&
@@ -152,6 +153,7 @@ export default function App() {
           style={styles.input}
           accessibilityLabel="Nome do material"
           placeholder="Nome do material"
+          placeholderTextColor={PLACEHOLDER_COLOR}
           value={nome}
           onChangeText={setNome}
           maxLength={60}
@@ -162,6 +164,7 @@ export default function App() {
           style={styles.input}
           accessibilityLabel="Quantidade do material"
           placeholder="Quantidade"
+          placeholderTextColor={PLACEHOLDER_COLOR}
           value={quantidade}
           onChangeText={setQuantidade}
           keyboardType="numeric"
@@ -206,6 +209,7 @@ export default function App() {
         style={styles.input}
         accessibilityLabel="Buscar material"
         placeholder="Buscar material"
+        placeholderTextColor={PLACEHOLDER_COLOR}
         value={busca}
         onChangeText={setBusca}
       />
