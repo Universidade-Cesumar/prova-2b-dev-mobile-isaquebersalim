@@ -11,6 +11,15 @@ Aplicativo mobile para controle inicial de estoque do almoxarifado de enfermagem
 - Consumo da MockAPI para buscar e salvar dados.
 - Busca simples para filtrar materiais pelo nome.
 
+## Contrato da Sprint 1
+
+Componentes obrigatorios implementados:
+
+- `input-nome`: campo de texto para nome do material.
+- `input-quantidade`: campo numerico para quantidade.
+- `btn-cadastrar`: botao para envio do cadastro.
+- `lista-materiais`: lista dinamica com os materiais da API.
+
 ## Tecnologias
 
 - React Native
