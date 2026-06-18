@@ -113,6 +113,25 @@ export default function App() {
     }
   };
 
+  const excluirMaterial = async (material) => {
+    setExcluindoId(material.id);
+    setMensagem('');
+
+    try {
+      const resposta = await fetch(`${API_URL}/${material.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!resposta.ok) {
+        throw new Error('Nao foi possivel excluir o material.');
+      }
+    } catch (error) {
+      setMensagem(error.message);
+    } finally {
+      setExcluindoId(null);
+    }
+  };
+
   const cadastrarMaterial = async () => {
     const nomeTratado = nome.trim();
     const quantidadeTratada = quantidade.trim();
