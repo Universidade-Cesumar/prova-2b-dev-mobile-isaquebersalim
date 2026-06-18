@@ -60,7 +60,7 @@ describe('acoes de estoque da Sprint 2', () => {
     expect(getByTestId('btn-excluir')).toBeTruthy();
   });
 
-  test('envia PATCH e atualiza o saldo local', async () => {
+  test('envia PUT e atualiza o saldo local', async () => {
     global.fetch
       .mockResolvedValueOnce(criarResposta([material]))
       .mockResolvedValueOnce(
@@ -81,7 +81,7 @@ describe('acoes de estoque da Sprint 2', () => {
       expect(global.fetch).toHaveBeenLastCalledWith(
         `${API_URL}/${material.id}`,
         expect.objectContaining({
-          method: 'PATCH',
+          method: 'PUT',
           body: JSON.stringify({ quantidade: 7 }),
         }),
       ),

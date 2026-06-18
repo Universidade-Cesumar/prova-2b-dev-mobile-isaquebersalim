@@ -28,7 +28,7 @@ Componentes obrigatorios implementados:
 Cada material da lista possui:
 
 - `input-retirada`: quantidade que sera retirada do estoque.
-- `btn-baixar`: confirma a baixa e envia uma requisicao `PATCH`.
+- `btn-baixar`: confirma a baixa e envia uma requisicao `PUT`.
 - `btn-excluir`: exclui o material por meio de uma requisicao `DELETE`.
 
 A funcao pura `validarRetirada(estoqueAtual, quantidadeRetirada)` esta em
@@ -64,7 +64,7 @@ Operacoes utilizadas:
 
 - `GET /materiais`: carrega o inventario.
 - `POST /materiais`: cadastra um novo material.
-- `PATCH /materiais/:id`: atualiza o saldo depois de uma retirada.
+- `PUT /materiais/:id`: atualiza o saldo depois de uma retirada.
 - `DELETE /materiais/:id`: remove um material permanentemente.
 
 ## Como rodar
@@ -90,5 +90,5 @@ Para executar os testes:
 npm test
 ```
 
-A suite automatizada cobre as regras de retirada e os fluxos de `PATCH` e
+A suite automatizada cobre as regras de retirada e os fluxos de `PUT` e
 `DELETE` da Sprint 2.

@@ -81,7 +81,7 @@ export default function App() {
 
     try {
       const resposta = await fetch(`${API_URL}/${material.id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
