@@ -212,8 +212,9 @@ export default function App() {
       <TouchableOpacity
         testID="btn-baixar"
         onPress={() => baixarMaterial(item)}
+        disabled={baixandoId === item.id}
       >
-        <Text>Baixar</Text>
+        <Text>{baixandoId === item.id ? 'Baixando...' : 'Baixar'}</Text>
       </TouchableOpacity>
     </View>
   );
