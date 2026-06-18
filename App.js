@@ -28,6 +28,7 @@ export default function App() {
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [baixandoId, setBaixandoId] = useState(null);
+  const [excluindoId, setExcluindoId] = useState(null);
   const [mensagem, setMensagem] = useState('');
 
   const carregarMateriais = async () => {
