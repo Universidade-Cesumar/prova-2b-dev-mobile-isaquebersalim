@@ -151,6 +151,14 @@ export default function App() {
         <Text style={styles.materialDetalhe}>Quantidade atual</Text>
       </View>
       <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
+      <TextInput
+        testID="input-retirada"
+        placeholder="Retirar"
+        placeholderTextColor={PLACEHOLDER_COLOR}
+        value={retiradas[item.id] ?? ''}
+        onChangeText={(valor) => alterarRetirada(item.id, valor)}
+        keyboardType="numeric"
+      />
     </View>
   );
 
