@@ -10,6 +10,9 @@ Aplicativo mobile para controle inicial de estoque do almoxarifado de enfermagem
 - Cadastro de novos materiais com nome e quantidade.
 - Consumo da MockAPI para buscar e salvar dados.
 - Busca simples para filtrar materiais pelo nome.
+- Baixa rapida de estoque diretamente em cada material.
+- Exclusao permanente de materiais no servidor.
+- Bloqueio de retiradas invalidas ou maiores que o saldo atual.
 
 ## Contrato da Sprint 1
 
@@ -19,6 +22,18 @@ Componentes obrigatorios implementados:
 - `input-quantidade`: campo numerico para quantidade.
 - `btn-cadastrar`: botao para envio do cadastro.
 - `lista-materiais`: lista dinamica com os materiais da API.
+
+## Contrato da Sprint 2
+
+Cada material da lista possui:
+
+- `input-retirada`: quantidade que sera retirada do estoque.
+- `btn-baixar`: confirma a baixa e envia uma requisicao `PATCH`.
+- `btn-excluir`: exclui o material por meio de uma requisicao `DELETE`.
+
+A funcao pura `validarRetirada(estoqueAtual, quantidadeRetirada)` esta em
+`src/utils/validacoes.js`. Ela impede quantidades negativas, zeradas, nao
+numericas ou superiores ao estoque atual.
 
 ## Tecnologias
 
@@ -45,6 +60,13 @@ Modelo minimo enviado no cadastro:
 }
 ```
 
+Operacoes utilizadas:
+
+- `GET /materiais`: carrega o inventario.
+- `POST /materiais`: cadastra um novo material.
+- `PATCH /materiais/:id`: atualiza o saldo depois de uma retirada.
+- `DELETE /materiais/:id`: remove um material permanentemente.
+
 ## Como rodar
 
 Instale as dependencias:
@@ -67,3 +89,6 @@ Para executar os testes:
 ```bash
 npm test
 ```
+
+A suite automatizada cobre as regras de retirada e os fluxos de `PATCH` e
+`DELETE` da Sprint 2.
