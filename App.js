@@ -237,16 +237,25 @@ export default function App() {
         <TextInput
           testID="input-retirada"
           style={styles.inputRetirada}
+          accessibilityLabel={`Quantidade a retirar de ${item.nome ?? item.name}`}
           placeholder="Retirar"
           placeholderTextColor={PLACEHOLDER_COLOR}
           value={retiradas[item.id] ?? ''}
           onChangeText={(valor) => alterarRetirada(item.id, valor)}
           keyboardType="numeric"
+          maxLength={5}
+          returnKeyType="done"
           editable={baixandoId !== item.id && excluindoId !== item.id}
         />
         <TouchableOpacity
           testID="btn-baixar"
-          style={styles.botaoBaixar}
+          style={[
+            styles.botaoBaixar,
+            (baixandoId === item.id || excluindoId === item.id) &&
+              styles.botaoDesabilitado,
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel={`Baixar estoque de ${item.nome ?? item.name}`}
           onPress={() => baixarMaterial(item)}
           disabled={baixandoId === item.id || excluindoId === item.id}
         >
@@ -256,7 +265,13 @@ export default function App() {
         </TouchableOpacity>
         <TouchableOpacity
           testID="btn-excluir"
-          style={styles.botaoExcluir}
+          style={[
+            styles.botaoExcluir,
+            (baixandoId === item.id || excluindoId === item.id) &&
+              styles.botaoDesabilitado,
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel={`Excluir ${item.nome ?? item.name}`}
           onPress={() => excluirMaterial(item)}
           disabled={baixandoId === item.id || excluindoId === item.id}
         >
