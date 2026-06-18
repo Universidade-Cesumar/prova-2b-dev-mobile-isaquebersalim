@@ -104,6 +104,7 @@ export default function App() {
         ...valoresAtuais,
         [material.id]: '',
       }));
+      setMensagem('Retirada registrada com sucesso.');
     } catch (error) {
       setMensagem(error.message);
     } finally {
