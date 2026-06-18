@@ -64,6 +64,17 @@ export default function App() {
     }));
   };
 
+  const baixarMaterial = async (material) => {
+    const quantidadeRetirada = Number(retiradas[material.id]);
+
+    if (!validarRetirada(material.quantidade, quantidadeRetirada)) {
+      setMensagem('A retirada deve ser maior que zero e respeitar o saldo.');
+      return;
+    }
+
+    setMensagem('');
+  };
+
   const cadastrarMaterial = async () => {
     const nomeTratado = nome.trim();
     const quantidadeTratada = quantidade.trim();
