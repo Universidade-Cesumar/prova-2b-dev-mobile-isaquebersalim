@@ -153,6 +153,7 @@ export default function App() {
       <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
       <TextInput
         testID="input-retirada"
+        style={styles.inputRetirada}
         placeholder="Retirar"
         placeholderTextColor={PLACEHOLDER_COLOR}
         value={retiradas[item.id] ?? ''}
@@ -381,6 +382,17 @@ const styles = StyleSheet.create({
     color: '#1f6f5b',
     fontSize: 20,
     fontWeight: 'bold',
+    marginRight: 10,
+  },
+  inputRetirada: {
+    backgroundColor: '#f7faf8',
+    borderColor: '#cfd9d5',
+    borderRadius: 8,
+    borderWidth: 1,
+    color: '#1d2522',
+    minHeight: 40,
+    paddingHorizontal: 10,
+    width: 78,
   },
   listaVazia: {
     color: '#6b7772',
