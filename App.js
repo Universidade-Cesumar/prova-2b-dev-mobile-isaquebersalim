@@ -240,6 +240,12 @@ export default function App() {
       >
         <Text>{baixandoId === item.id ? 'Baixando...' : 'Baixar'}</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        testID="btn-excluir"
+        onPress={() => excluirMaterial(item)}
+      >
+        <Text>Excluir</Text>
+      </TouchableOpacity>
     </View>
   );
 
