@@ -13,6 +13,7 @@ describe('contrato de interface da Sprint 2', () => {
   test('usa PUT para atualizar o estoque na MockAPI', () => {
     expect(appSource).toContain("method: 'PUT'");
     expect(appSource).toContain('quantidade: novaQuantidade');
+    expect(appSource).toContain('const baixaDesabilitada = retiradaVazia');
   });
 
   test('usa DELETE e remove o material do estado local', () => {

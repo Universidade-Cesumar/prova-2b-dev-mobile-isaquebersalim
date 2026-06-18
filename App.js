@@ -257,6 +257,10 @@ export default function App() {
 
   const renderMaterial = ({ item }) => {
     const estoqueZerado = Number(item.quantidade) === 0;
+    const retiradaVazia = !String(retiradas[item.id] ?? '').trim();
+    const acaoEmAndamento =
+      baixandoId === item.id || excluindoId === item.id;
+    const baixaDesabilitada = retiradaVazia || acaoEmAndamento;
 
     return (
       <View
@@ -322,20 +326,19 @@ export default function App() {
             keyboardType="numeric"
             maxLength={5}
             returnKeyType="done"
-            editable={baixandoId !== item.id && excluindoId !== item.id}
+            editable={!acaoEmAndamento}
           />
           <TouchableOpacity
             testID="btn-baixar"
             style={[
               styles.botaoBaixar,
-              (baixandoId === item.id || excluindoId === item.id) &&
-                styles.botaoDesabilitado,
+              baixaDesabilitada && styles.botaoDesabilitado,
             ]}
             accessibilityRole="button"
             accessibilityLabel={`Baixar estoque de ${item.nome ?? item.name}`}
             activeOpacity={0.82}
             onPress={() => baixarMaterial(item)}
-            disabled={baixandoId === item.id || excluindoId === item.id}
+            disabled={baixaDesabilitada}
           >
             <Text style={styles.botaoBaixarTexto}>
               {baixandoId === item.id ? 'Baixando...' : 'Baixar'}
@@ -345,14 +348,13 @@ export default function App() {
             testID="btn-excluir"
             style={[
               styles.botaoExcluir,
-              (baixandoId === item.id || excluindoId === item.id) &&
-                styles.botaoDesabilitado,
+              acaoEmAndamento && styles.botaoDesabilitado,
             ]}
             accessibilityRole="button"
             accessibilityLabel={`Excluir ${item.nome ?? item.name}`}
             activeOpacity={0.72}
             onPress={() => confirmarExclusao(item)}
-            disabled={baixandoId === item.id || excluindoId === item.id}
+            disabled={acaoEmAndamento}
           >
             <Text style={styles.botaoExcluirTexto}>
               {excluindoId === item.id ? 'Excluindo...' : 'Excluir'}
