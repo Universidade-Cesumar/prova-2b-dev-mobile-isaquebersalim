@@ -23,6 +23,7 @@ export default function App() {
   const [quantidade, setQuantidade] = useState('');
   const [busca, setBusca] = useState('');
   const [materiais, setMateriais] = useState([]);
+  const [retiradas, setRetiradas] = useState({});
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [mensagem, setMensagem] = useState('');
