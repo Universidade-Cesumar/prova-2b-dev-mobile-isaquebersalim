@@ -2,7 +2,11 @@ function validarRetirada(estoqueAtual, quantidadeRetirada) {
   const estoque = Number(estoqueAtual);
   const retirada = Number(quantidadeRetirada);
 
-  return retirada > 0 && retirada <= estoque;
+  if (!Number.isFinite(estoque) || !Number.isFinite(retirada)) {
+    return false;
+  }
+
+  return estoque >= 0 && retirada > 0 && retirada <= estoque;
 }
 
 module.exports = {
