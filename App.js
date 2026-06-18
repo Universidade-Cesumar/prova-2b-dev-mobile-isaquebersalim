@@ -225,35 +225,46 @@ export default function App() {
 
   const renderMaterial = ({ item }) => (
     <View style={styles.materialItem}>
-      <View style={styles.materialInfo}>
-        <Text style={styles.materialNome}>{item.nome ?? item.name}</Text>
-        <Text style={styles.materialDetalhe}>Quantidade atual</Text>
+      <View style={styles.materialCabecalho}>
+        <View style={styles.materialInfo}>
+          <Text style={styles.materialNome}>{item.nome ?? item.name}</Text>
+          <Text style={styles.materialDetalhe}>Quantidade atual</Text>
+        </View>
+        <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
       </View>
-      <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
-      <TextInput
-        testID="input-retirada"
-        style={styles.inputRetirada}
-        placeholder="Retirar"
-        placeholderTextColor={PLACEHOLDER_COLOR}
-        value={retiradas[item.id] ?? ''}
-        onChangeText={(valor) => alterarRetirada(item.id, valor)}
-        keyboardType="numeric"
-        editable={baixandoId !== item.id && excluindoId !== item.id}
-      />
-      <TouchableOpacity
-        testID="btn-baixar"
-        onPress={() => baixarMaterial(item)}
-        disabled={baixandoId === item.id || excluindoId === item.id}
-      >
-        <Text>{baixandoId === item.id ? 'Baixando...' : 'Baixar'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        testID="btn-excluir"
-        onPress={() => excluirMaterial(item)}
-        disabled={baixandoId === item.id || excluindoId === item.id}
-      >
-        <Text>{excluindoId === item.id ? 'Excluindo...' : 'Excluir'}</Text>
-      </TouchableOpacity>
+
+      <View style={styles.acoesEstoque}>
+        <TextInput
+          testID="input-retirada"
+          style={styles.inputRetirada}
+          placeholder="Retirar"
+          placeholderTextColor={PLACEHOLDER_COLOR}
+          value={retiradas[item.id] ?? ''}
+          onChangeText={(valor) => alterarRetirada(item.id, valor)}
+          keyboardType="numeric"
+          editable={baixandoId !== item.id && excluindoId !== item.id}
+        />
+        <TouchableOpacity
+          testID="btn-baixar"
+          style={styles.botaoBaixar}
+          onPress={() => baixarMaterial(item)}
+          disabled={baixandoId === item.id || excluindoId === item.id}
+        >
+          <Text style={styles.botaoBaixarTexto}>
+            {baixandoId === item.id ? 'Baixando...' : 'Baixar'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          testID="btn-excluir"
+          style={styles.botaoExcluir}
+          onPress={() => excluirMaterial(item)}
+          disabled={baixandoId === item.id || excluindoId === item.id}
+        >
+          <Text style={styles.botaoExcluirTexto}>
+            {excluindoId === item.id ? 'Excluindo...' : 'Excluir'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -447,16 +458,17 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   materialItem: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     borderColor: '#dce5e1',
     borderRadius: 8,
     borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  materialCabecalho: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    minHeight: 64,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
   },
   materialInfo: {
     flex: 1,
@@ -476,7 +488,11 @@ const styles = StyleSheet.create({
     color: '#1f6f5b',
     fontSize: 20,
     fontWeight: 'bold',
-    marginRight: 10,
+  },
+  acoesEstoque: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
   },
   inputRetirada: {
     backgroundColor: '#f7faf8',
@@ -484,9 +500,36 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     color: '#1d2522',
+    flex: 1,
     minHeight: 40,
     paddingHorizontal: 10,
-    width: 78,
+  },
+  botaoBaixar: {
+    alignItems: 'center',
+    backgroundColor: '#1f6f5b',
+    borderRadius: 8,
+    justifyContent: 'center',
+    minWidth: 74,
+    paddingHorizontal: 12,
+  },
+  botaoBaixarTexto: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  botaoExcluir: {
+    alignItems: 'center',
+    borderColor: '#b93838',
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: 'center',
+    minWidth: 70,
+    paddingHorizontal: 10,
+  },
+  botaoExcluirTexto: {
+    color: '#a52f2f',
+    fontSize: 14,
+    fontWeight: '600',
   },
   listaVazia: {
     color: '#6b7772',
