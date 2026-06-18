@@ -232,19 +232,21 @@ export default function App() {
         value={retiradas[item.id] ?? ''}
         onChangeText={(valor) => alterarRetirada(item.id, valor)}
         keyboardType="numeric"
+        editable={baixandoId !== item.id && excluindoId !== item.id}
       />
       <TouchableOpacity
         testID="btn-baixar"
         onPress={() => baixarMaterial(item)}
-        disabled={baixandoId === item.id}
+        disabled={baixandoId === item.id || excluindoId === item.id}
       >
         <Text>{baixandoId === item.id ? 'Baixando...' : 'Baixar'}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         testID="btn-excluir"
         onPress={() => excluirMaterial(item)}
+        disabled={baixandoId === item.id || excluindoId === item.id}
       >
-        <Text>Excluir</Text>
+        <Text>{excluindoId === item.id ? 'Excluindo...' : 'Excluir'}</Text>
       </TouchableOpacity>
     </View>
   );
