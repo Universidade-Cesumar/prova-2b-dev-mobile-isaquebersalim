@@ -56,6 +56,13 @@ export default function App() {
     carregarMateriais();
   }, []);
 
+  const alterarRetirada = (materialId, valor) => {
+    setRetiradas((valoresAtuais) => ({
+      ...valoresAtuais,
+      [materialId]: valor,
+    }));
+  };
+
   const cadastrarMaterial = async () => {
     const nomeTratado = nome.trim();
     const quantidadeTratada = quantidade.trim();
