@@ -129,6 +129,12 @@ export default function App() {
       setMateriais((estoqueAtual) =>
         estoqueAtual.filter((item) => item.id !== material.id),
       );
+      setRetiradas((valoresAtuais) => {
+        const proximosValores = { ...valoresAtuais };
+        delete proximosValores[material.id];
+        return proximosValores;
+      });
+      setMensagem('Material excluido com sucesso.');
     } catch (error) {
       setMensagem(error.message);
     } finally {
