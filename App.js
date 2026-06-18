@@ -2,12 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { validarRetirada } from './src/utils/validacoes';
 
 const API_URL = 'https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais';
@@ -20,6 +24,8 @@ const isTesteSemFetchMockado = () =>
   !fetch._isMockFunction;
 
 export default function App() {
+  const { width } = useWindowDimensions();
+  const layoutCompacto = width < 720;
   const [nome, setNome] = useState('');
   const [quantidade, setQuantidade] = useState('');
   const [busca, setBusca] = useState('');
@@ -222,24 +228,41 @@ export default function App() {
   const mensagemListaVazia = busca.trim()
     ? 'Nenhum material encontrado.'
     : 'Nenhum material cadastrado.';
+  const mensagemSucesso = mensagem.toLowerCase().includes('sucesso');
 
   const renderMaterial = ({ item }) => (
-    <View style={styles.materialItem}>
+    <View
+      style={[
+        styles.materialItem,
+        Number(item.quantidade) === 0 && styles.materialItemZerado,
+      ]}
+    >
       <View style={styles.materialCabecalho}>
         <View style={styles.materialInfo}>
           <Text style={styles.materialNome}>{item.nome ?? item.name}</Text>
           <Text style={styles.materialDetalhe}>Quantidade atual</Text>
         </View>
-        <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
+        <View style={styles.quantidadeContainer}>
+          <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
+        </View>
       </View>
 
-      <View style={styles.acoesEstoque}>
+      <View
+        style={[
+          styles.acoesEstoque,
+          layoutCompacto && styles.acoesEstoqueCompactas,
+        ]}
+      >
         <TextInput
           testID="input-retirada"
-          style={styles.inputRetirada}
+          style={[
+            styles.inputRetirada,
+            !layoutCompacto && styles.inputRetiradaDesktop,
+          ]}
           accessibilityLabel={`Quantidade a retirar de ${item.nome ?? item.name}`}
           placeholder="Retirar"
           placeholderTextColor={PLACEHOLDER_COLOR}
+          selectionColor="#176b57"
           value={retiradas[item.id] ?? ''}
           onChangeText={(valor) => alterarRetirada(item.id, valor)}
           keyboardType="numeric"
@@ -256,6 +279,7 @@ export default function App() {
           ]}
           accessibilityRole="button"
           accessibilityLabel={`Baixar estoque de ${item.nome ?? item.name}`}
+          activeOpacity={0.82}
           onPress={() => baixarMaterial(item)}
           disabled={baixandoId === item.id || excluindoId === item.id}
         >
@@ -272,6 +296,7 @@ export default function App() {
           ]}
           accessibilityRole="button"
           accessibilityLabel={`Excluir ${item.nome ?? item.name}`}
+          activeOpacity={0.72}
           onPress={() => excluirMaterial(item)}
           disabled={baixandoId === item.id || excluindoId === item.id}
         >
@@ -284,201 +309,430 @@ export default function App() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="light" />
 
-      <View style={styles.formulario}>
-        <TextInput
-          testID="input-nome"
-          style={styles.input}
-          accessibilityLabel="Nome do material"
-          placeholder="Nome do material"
-          placeholderTextColor={PLACEHOLDER_COLOR}
-          value={nome}
-          onChangeText={setNome}
-          autoCapitalize="words"
-          autoCorrect={false}
-          maxLength={60}
-          returnKeyType="next"
-        />
-
-        <TextInput
-          testID="input-quantidade"
-          style={styles.input}
-          accessibilityLabel="Quantidade do material"
-          placeholder="Quantidade"
-          placeholderTextColor={PLACEHOLDER_COLOR}
-          value={quantidade}
-          onChangeText={setQuantidade}
-          keyboardType="numeric"
-          maxLength={5}
-          returnKeyType="done"
-        />
-
-        <TouchableOpacity
-          testID="btn-cadastrar"
-          style={[styles.botao, salvando && styles.botaoDesabilitado]}
-          accessibilityLabel="Cadastrar material"
-          onPress={cadastrarMaterial}
-          disabled={salvando}
-        >
-          <Text style={styles.botaoTexto}>
-            {salvando ? 'Cadastrando...' : 'Cadastrar'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.resumo}>
-        <View>
-          <Text testID="total-itens" style={styles.totalItens}>
-            Total de itens: {materiaisFiltrados.length}
-          </Text>
-          <Text style={styles.totalUnidades}>
-            Unidades em estoque: {totalUnidades}
-          </Text>
+      <View style={styles.cabecalho}>
+        <View style={styles.cabecalhoConteudo}>
+          <View style={styles.marcaVisual} />
+          <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
         </View>
-
-        <TouchableOpacity
-          style={styles.botaoAtualizar}
-          accessibilityLabel="Atualizar estoque"
-          onPress={carregarMateriais}
-          disabled={carregando}
-        >
-          <Text style={styles.botaoAtualizarTexto}>Atualizar</Text>
-        </TouchableOpacity>
       </View>
 
-      <TextInput
-        testID="input-busca"
-        style={styles.input}
-        accessibilityLabel="Buscar material"
-        placeholder="Buscar material"
-        placeholderTextColor={PLACEHOLDER_COLOR}
-        value={busca}
-        onChangeText={setBusca}
-        autoCapitalize="none"
-        autoCorrect={false}
-        returnKeyType="search"
-      />
-
-      {mensagem ? <Text style={styles.mensagem}>{mensagem}</Text> : null}
-
-      {exibindoCarregamentoInicial ? (
-        <ActivityIndicator size="large" color="#1f6f5b" style={styles.loading} />
-      ) : (
-        <View testID="lista-materials" style={styles.listaWrapper}>
-          <FlatList
-            testID="lista-materiais"
-            data={materiaisFiltrados}
-            keyExtractor={(item, index) => String(item.id ?? index)}
-            renderItem={renderMaterial}
-            refreshing={carregando}
-            onRefresh={carregarMateriais}
-            contentContainerStyle={styles.listaConteudo}
-            ListEmptyComponent={
-              <Text style={styles.listaVazia}>{mensagemListaVazia}</Text>
-            }
+      <View
+        style={[
+          styles.areaTrabalho,
+          layoutCompacto && styles.areaTrabalhoCompacta,
+        ]}
+      >
+        <View
+          style={[
+            styles.formulario,
+            !layoutCompacto && styles.formularioDesktop,
+          ]}
+        >
+          <TextInput
+            testID="input-nome"
+            style={[styles.input, styles.inputNome]}
+            accessibilityLabel="Nome do material"
+            placeholder="Nome do material"
+            placeholderTextColor={PLACEHOLDER_COLOR}
+            selectionColor="#176b57"
+            value={nome}
+            onChangeText={setNome}
+            autoCapitalize="words"
+            autoCorrect={false}
+            maxLength={60}
+            returnKeyType="next"
           />
+
+          <TextInput
+            testID="input-quantidade"
+            style={[
+              styles.input,
+              !layoutCompacto && styles.inputQuantidadeDesktop,
+            ]}
+            accessibilityLabel="Quantidade do material"
+            placeholder="Quantidade"
+            placeholderTextColor={PLACEHOLDER_COLOR}
+            selectionColor="#176b57"
+            value={quantidade}
+            onChangeText={setQuantidade}
+            keyboardType="numeric"
+            maxLength={5}
+            returnKeyType="done"
+          />
+
+          <TouchableOpacity
+            testID="btn-cadastrar"
+            style={[
+              styles.botao,
+              !layoutCompacto && styles.botaoDesktop,
+              salvando && styles.botaoDesabilitado,
+            ]}
+            accessibilityLabel="Cadastrar material"
+            accessibilityRole="button"
+            activeOpacity={0.82}
+            onPress={cadastrarMaterial}
+            disabled={salvando}
+          >
+            <Text style={styles.botaoTexto}>
+              {salvando ? 'Cadastrando...' : 'Cadastrar'}
+            </Text>
+          </TouchableOpacity>
         </View>
-      )}
-    </View>
+
+        <View
+          style={[
+            styles.resumo,
+            layoutCompacto && styles.resumoCompacto,
+          ]}
+        >
+          <View
+            style={[
+              styles.resumoDados,
+              layoutCompacto && styles.resumoDadosCompacto,
+            ]}
+          >
+            <Text testID="total-itens" style={styles.totalItens}>
+              Total de itens: {materiaisFiltrados.length}
+            </Text>
+            <View style={styles.divisorResumo} />
+            <Text style={styles.totalUnidades}>
+              Unidades em estoque: {totalUnidades}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.botaoAtualizar,
+              layoutCompacto && styles.botaoAtualizarCompacto,
+              carregando && styles.botaoDesabilitado,
+            ]}
+            accessibilityLabel="Atualizar estoque"
+            accessibilityRole="button"
+            activeOpacity={0.72}
+            onPress={carregarMateriais}
+            disabled={carregando}
+          >
+            <Text style={styles.botaoAtualizarTexto}>Atualizar</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TextInput
+          testID="input-busca"
+          style={[styles.input, styles.inputBusca]}
+          accessibilityLabel="Buscar material"
+          placeholder="Buscar material"
+          placeholderTextColor={PLACEHOLDER_COLOR}
+          selectionColor="#176b57"
+          value={busca}
+          onChangeText={setBusca}
+          autoCapitalize="none"
+          autoCorrect={false}
+          returnKeyType="search"
+        />
+
+        {mensagem ? (
+          <View
+            style={[
+              styles.mensagemContainer,
+              mensagemSucesso
+                ? styles.mensagemSucesso
+                : styles.mensagemAtencao,
+            ]}
+          >
+            <View
+              style={[
+                styles.mensagemMarcador,
+                mensagemSucesso
+                  ? styles.mensagemMarcadorSucesso
+                  : styles.mensagemMarcadorAtencao,
+              ]}
+            />
+            <Text
+              style={[
+                styles.mensagem,
+                mensagemSucesso
+                  ? styles.mensagemTextoSucesso
+                  : styles.mensagemTextoAtencao,
+              ]}
+            >
+              {mensagem}
+            </Text>
+          </View>
+        ) : null}
+
+        {exibindoCarregamentoInicial ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#176b57" />
+          </View>
+        ) : (
+          <View testID="lista-materials" style={styles.listaWrapper}>
+            <FlatList
+              testID="lista-materiais"
+              data={materiaisFiltrados}
+              keyExtractor={(item, index) => String(item.id ?? index)}
+              renderItem={renderMaterial}
+              refreshing={carregando}
+              onRefresh={carregarMateriais}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.listaConteudo}
+              ListEmptyComponent={
+                <Text style={styles.listaVazia}>{mensagemListaVazia}</Text>
+              }
+            />
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7faf8',
-    paddingHorizontal: 20,
-    paddingTop: 50,
+    backgroundColor: '#edf3f0',
+  },
+  cabecalho: {
+    backgroundColor: '#123b34',
+    borderBottomColor: '#dd8b69',
+    borderBottomWidth: 3,
+    paddingHorizontal: 24,
+    paddingVertical: 18,
+  },
+  cabecalhoConteudo: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    maxWidth: 1040,
+    width: '100%',
+  },
+  marcaVisual: {
+    backgroundColor: '#dd8b69',
+    borderRadius: 3,
+    height: 30,
+    marginRight: 12,
+    width: 5,
   },
   title: {
-    color: '#17362f',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    color: '#fff',
+    fontSize: 21,
+    fontWeight: '700',
+  },
+  areaTrabalho: {
+    alignSelf: 'center',
+    flex: 1,
+    maxWidth: 1040,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    width: '100%',
+  },
+  areaTrabalhoCompacta: {
+    paddingHorizontal: 16,
+    paddingTop: 18,
   },
   formulario: {
     gap: 12,
-    marginBottom: 18,
+    marginBottom: 22,
+  },
+  formularioDesktop: {
+    alignItems: 'stretch',
+    flexDirection: 'row',
   },
   input: {
     backgroundColor: '#fff',
-    borderColor: '#cfd9d5',
+    borderColor: '#c8d5d0',
     borderRadius: 8,
     borderWidth: 1,
-    color: '#1d2522',
-    fontSize: 16,
-    minHeight: 48,
-    paddingHorizontal: 14,
+    color: '#18312b',
+    fontSize: 15,
+    minHeight: 50,
+    paddingHorizontal: 16,
+  },
+  inputNome: {
+    flex: 1,
+  },
+  inputQuantidadeDesktop: {
+    flex: 0,
+    width: 180,
+  },
+  inputBusca: {
+    borderColor: '#bacbc5',
+    marginBottom: 2,
   },
   botao: {
     alignItems: 'center',
-    backgroundColor: '#1f6f5b',
+    backgroundColor: '#176b57',
     borderRadius: 8,
     justifyContent: 'center',
-    minHeight: 48,
+    minHeight: 50,
+    paddingHorizontal: 24,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#0d3f33',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.18,
+        shadowRadius: 7,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0 5px 14px rgba(13, 63, 51, 0.16)',
+      },
+    }),
+  },
+  botaoDesktop: {
+    minWidth: 160,
   },
   botaoDesabilitado: {
-    opacity: 0.65,
+    opacity: 0.58,
   },
   botaoTexto: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: '700',
   },
   resumo: {
     alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  totalItens: {
-    color: '#17362f',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  totalUnidades: {
-    color: '#4f5f59',
-    fontSize: 14,
-    marginTop: 4,
-  },
-  botaoAtualizar: {
-    borderColor: '#1f6f5b',
+    backgroundColor: '#dfeae6',
+    borderColor: '#c4d6cf',
     borderRadius: 8,
     borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+    minHeight: 64,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  resumoDados: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexShrink: 1,
+  },
+  resumoCompacto: {
+    alignItems: 'stretch',
+    flexDirection: 'column',
+    gap: 10,
+  },
+  resumoDadosCompacto: {
+    justifyContent: 'space-between',
+  },
+  totalItens: {
+    color: '#123b34',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  divisorResumo: {
+    backgroundColor: '#9db7ae',
+    height: 22,
+    marginHorizontal: 12,
+    width: 1,
+  },
+  totalUnidades: {
+    color: '#38534b',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  botaoAtualizar: {
+    backgroundColor: '#fff',
+    borderColor: '#176b57',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginLeft: 12,
+    minWidth: 88,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+  },
+  botaoAtualizarCompacto: {
+    alignSelf: 'flex-end',
+    marginLeft: 0,
   },
   botaoAtualizarTexto: {
-    color: '#1f6f5b',
+    color: '#176b57',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+  },
+  mensagemContainer: {
+    alignItems: 'center',
+    borderRadius: 8,
+    flexDirection: 'row',
+    marginTop: 12,
+    minHeight: 44,
+    paddingHorizontal: 14,
+  },
+  mensagemSucesso: {
+    backgroundColor: '#e2f1e9',
+    borderColor: '#b6d8c7',
+    borderWidth: 1,
+  },
+  mensagemAtencao: {
+    backgroundColor: '#fff0e8',
+    borderColor: '#efc8b6',
+    borderWidth: 1,
+  },
+  mensagemMarcador: {
+    borderRadius: 3,
+    height: 24,
+    marginRight: 10,
+    width: 4,
+  },
+  mensagemMarcadorSucesso: {
+    backgroundColor: '#278363',
+  },
+  mensagemMarcadorAtencao: {
+    backgroundColor: '#c66843',
   },
   mensagem: {
-    color: '#8a4b12',
+    flex: 1,
     fontSize: 14,
-    marginTop: 10,
+    fontWeight: '500',
   },
-  loading: {
-    marginTop: 24,
+  mensagemTextoSucesso: {
+    color: '#215f4a',
+  },
+  mensagemTextoAtencao: {
+    color: '#87452c',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
   listaWrapper: {
     flex: 1,
-    marginTop: 12,
+    marginTop: 14,
   },
   listaConteudo: {
-    gap: 10,
-    paddingBottom: 24,
+    gap: 12,
+    paddingBottom: 28,
   },
   materialItem: {
     backgroundColor: '#fff',
-    borderColor: '#dce5e1',
+    borderColor: '#d1ddd8',
     borderRadius: 8,
     borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 15,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#17362f',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 2,
+      },
+      web: {
+        boxShadow: '0 6px 18px rgba(23, 54, 47, 0.08)',
+      },
+    }),
+  },
+  materialItemZerado: {
+    borderColor: '#d99c84',
   },
   materialCabecalho: {
     alignItems: 'center',
@@ -490,66 +744,92 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   materialNome: {
-    color: '#1d2522',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#17362f',
+    fontSize: 17,
+    fontWeight: '700',
   },
   materialDetalhe: {
-    color: '#6b7772',
+    color: '#687b74',
     fontSize: 13,
-    marginTop: 3,
+    marginTop: 4,
   },
-  materialQuantidade: {
-    color: '#1f6f5b',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  acoesEstoque: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
-  },
-  inputRetirada: {
-    backgroundColor: '#f7faf8',
-    borderColor: '#cfd9d5',
+  quantidadeContainer: {
+    alignItems: 'center',
+    backgroundColor: '#e3efeb',
+    borderColor: '#c1d8d0',
     borderRadius: 8,
     borderWidth: 1,
-    color: '#1d2522',
-    flex: 1,
-    minHeight: 40,
+    justifyContent: 'center',
+    minHeight: 44,
+    minWidth: 56,
     paddingHorizontal: 10,
+  },
+  materialQuantidade: {
+    color: '#176b57',
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  acoesEstoque: {
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 14,
+  },
+  acoesEstoqueCompactas: {
+    flexWrap: 'nowrap',
+  },
+  inputRetirada: {
+    backgroundColor: '#f4f8f6',
+    borderColor: '#c5d4cf',
+    borderRadius: 8,
+    borderWidth: 1,
+    color: '#18312b',
+    flex: 1,
+    fontSize: 14,
+    minHeight: 44,
+    minWidth: 0,
+    paddingHorizontal: 12,
+  },
+  inputRetiradaDesktop: {
+    flexBasis: 180,
+    flexGrow: 0,
+    flexShrink: 0,
+    width: 180,
   },
   botaoBaixar: {
     alignItems: 'center',
-    backgroundColor: '#1f6f5b',
+    backgroundColor: '#176b57',
     borderRadius: 8,
     justifyContent: 'center',
-    minWidth: 74,
-    paddingHorizontal: 12,
+    minHeight: 44,
+    minWidth: 82,
+    paddingHorizontal: 14,
   },
   botaoBaixarTexto: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   botaoExcluir: {
     alignItems: 'center',
-    borderColor: '#b93838',
+    backgroundColor: '#fff7f4',
+    borderColor: '#c75c4f',
     borderRadius: 8,
     borderWidth: 1,
     justifyContent: 'center',
-    minWidth: 70,
-    paddingHorizontal: 10,
+    minHeight: 44,
+    minWidth: 78,
+    paddingHorizontal: 12,
   },
   botaoExcluirTexto: {
-    color: '#a52f2f',
+    color: '#a6443a',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   listaVazia: {
-    color: '#6b7772',
+    color: '#61756d',
     fontSize: 15,
-    marginTop: 24,
+    marginTop: 34,
     textAlign: 'center',
   },
 });
