@@ -93,7 +93,13 @@ export default function App() {
         throw new Error('Nao foi possivel registrar a retirada.');
       }
 
-      await resposta.json();
+      const materialAtualizado = await resposta.json();
+
+      setMateriais((estoqueAtual) =>
+        estoqueAtual.map((item) =>
+          item.id === material.id ? materialAtualizado : item,
+        ),
+      );
     } catch (error) {
       setMensagem(error.message);
     } finally {
