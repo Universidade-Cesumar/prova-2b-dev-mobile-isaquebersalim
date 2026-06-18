@@ -27,6 +27,7 @@ export default function App() {
   const [retiradas, setRetiradas] = useState({});
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
+  const [baixandoId, setBaixandoId] = useState(null);
   const [mensagem, setMensagem] = useState('');
 
   const carregarMateriais = async () => {
