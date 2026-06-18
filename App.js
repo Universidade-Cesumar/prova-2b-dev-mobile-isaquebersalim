@@ -125,6 +125,10 @@ export default function App() {
       if (!resposta.ok) {
         throw new Error('Nao foi possivel excluir o material.');
       }
+
+      setMateriais((estoqueAtual) =>
+        estoqueAtual.filter((item) => item.id !== material.id),
+      );
     } catch (error) {
       setMensagem(error.message);
     } finally {
