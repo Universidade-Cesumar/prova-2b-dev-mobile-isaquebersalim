@@ -255,83 +255,113 @@ export default function App() {
     : 'Nenhum material cadastrado.';
   const mensagemSucesso = mensagem.toLowerCase().includes('sucesso');
 
-  const renderMaterial = ({ item }) => (
-    <View
-      style={[
-        styles.materialItem,
-        Number(item.quantidade) === 0 && styles.materialItemZerado,
-      ]}
-    >
-      <View style={styles.materialCabecalho}>
-        <View style={styles.materialInfo}>
-          <Text style={styles.materialNome}>{item.nome ?? item.name}</Text>
-          <Text style={styles.materialDetalhe}>Quantidade atual</Text>
-        </View>
-        <View style={styles.quantidadeContainer}>
-          <Text style={styles.materialQuantidade}>{item.quantidade ?? 0}</Text>
-        </View>
-      </View>
+  const renderMaterial = ({ item }) => {
+    const estoqueZerado = Number(item.quantidade) === 0;
 
+    return (
       <View
         style={[
-          styles.acoesEstoque,
-          layoutCompacto && styles.acoesEstoqueCompactas,
+          styles.materialItem,
+          estoqueZerado && styles.materialItemZerado,
         ]}
       >
-        <TextInput
-          testID="input-retirada"
+        <View style={styles.materialCabecalho}>
+          <View style={styles.materialInfo}>
+            <Text
+              style={[
+                styles.materialNome,
+                estoqueZerado && styles.materialNomeZerado,
+              ]}
+            >
+              {item.nome ?? item.name}
+            </Text>
+            <Text
+              style={[
+                styles.materialDetalhe,
+                estoqueZerado && styles.materialDetalheZerado,
+              ]}
+            >
+              Quantidade atual
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.quantidadeContainer,
+              estoqueZerado && styles.quantidadeContainerZerada,
+            ]}
+          >
+            <Text
+              style={[
+                styles.materialQuantidade,
+                estoqueZerado && styles.materialQuantidadeZerada,
+              ]}
+            >
+              {item.quantidade ?? 0}
+            </Text>
+          </View>
+        </View>
+
+        <View
           style={[
-            styles.inputRetirada,
-            !layoutCompacto && styles.inputRetiradaDesktop,
+            styles.acoesEstoque,
+            layoutCompacto && styles.acoesEstoqueCompactas,
           ]}
-          accessibilityLabel={`Quantidade a retirar de ${item.nome ?? item.name}`}
-          placeholder="Retirar"
-          placeholderTextColor={PLACEHOLDER_COLOR}
-          selectionColor="#176b57"
-          value={retiradas[item.id] ?? ''}
-          onChangeText={(valor) => alterarRetirada(item.id, valor)}
-          keyboardType="numeric"
-          maxLength={5}
-          returnKeyType="done"
-          editable={baixandoId !== item.id && excluindoId !== item.id}
-        />
-        <TouchableOpacity
-          testID="btn-baixar"
-          style={[
-            styles.botaoBaixar,
-            (baixandoId === item.id || excluindoId === item.id) &&
-              styles.botaoDesabilitado,
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel={`Baixar estoque de ${item.nome ?? item.name}`}
-          activeOpacity={0.82}
-          onPress={() => baixarMaterial(item)}
-          disabled={baixandoId === item.id || excluindoId === item.id}
         >
-          <Text style={styles.botaoBaixarTexto}>
-            {baixandoId === item.id ? 'Baixando...' : 'Baixar'}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          testID="btn-excluir"
-          style={[
-            styles.botaoExcluir,
-            (baixandoId === item.id || excluindoId === item.id) &&
-              styles.botaoDesabilitado,
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel={`Excluir ${item.nome ?? item.name}`}
-          activeOpacity={0.72}
-          onPress={() => confirmarExclusao(item)}
-          disabled={baixandoId === item.id || excluindoId === item.id}
-        >
-          <Text style={styles.botaoExcluirTexto}>
-            {excluindoId === item.id ? 'Excluindo...' : 'Excluir'}
-          </Text>
-        </TouchableOpacity>
+          <TextInput
+            testID="input-retirada"
+            style={[
+              styles.inputRetirada,
+              !layoutCompacto && styles.inputRetiradaDesktop,
+            ]}
+            accessibilityLabel={`Quantidade a retirar de ${item.nome ?? item.name}`}
+            placeholder="Retirar"
+            placeholderTextColor={PLACEHOLDER_COLOR}
+            selectionColor="#176b57"
+            value={retiradas[item.id] ?? ''}
+            onChangeText={(valor) => alterarRetirada(item.id, valor)}
+            keyboardType="numeric"
+            maxLength={5}
+            returnKeyType="done"
+            editable={baixandoId !== item.id && excluindoId !== item.id}
+          />
+          <TouchableOpacity
+            testID="btn-baixar"
+            style={[
+              styles.botaoBaixar,
+              (baixandoId === item.id || excluindoId === item.id) &&
+                styles.botaoDesabilitado,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={`Baixar estoque de ${item.nome ?? item.name}`}
+            activeOpacity={0.82}
+            onPress={() => baixarMaterial(item)}
+            disabled={baixandoId === item.id || excluindoId === item.id}
+          >
+            <Text style={styles.botaoBaixarTexto}>
+              {baixandoId === item.id ? 'Baixando...' : 'Baixar'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            testID="btn-excluir"
+            style={[
+              styles.botaoExcluir,
+              (baixandoId === item.id || excluindoId === item.id) &&
+                styles.botaoDesabilitado,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={`Excluir ${item.nome ?? item.name}`}
+            activeOpacity={0.72}
+            onPress={() => confirmarExclusao(item)}
+            disabled={baixandoId === item.id || excluindoId === item.id}
+          >
+            <Text style={styles.botaoExcluirTexto}>
+              {excluindoId === item.id ? 'Excluindo...' : 'Excluir'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -757,7 +787,9 @@ const styles = StyleSheet.create({
     }),
   },
   materialItemZerado: {
-    borderColor: '#d99c84',
+    backgroundColor: '#fff8f6',
+    borderColor: '#cf6a5d',
+    borderLeftWidth: 4,
   },
   materialCabecalho: {
     alignItems: 'center',
@@ -773,10 +805,17 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
   },
+  materialNomeZerado: {
+    color: '#8d342e',
+  },
   materialDetalhe: {
     color: '#687b74',
     fontSize: 13,
     marginTop: 4,
+  },
+  materialDetalheZerado: {
+    color: '#a25047',
+    fontWeight: '600',
   },
   quantidadeContainer: {
     alignItems: 'center',
@@ -789,10 +828,17 @@ const styles = StyleSheet.create({
     minWidth: 56,
     paddingHorizontal: 10,
   },
+  quantidadeContainerZerada: {
+    backgroundColor: '#fde5df',
+    borderColor: '#d98a7d',
+  },
   materialQuantidade: {
     color: '#176b57',
     fontSize: 20,
     fontWeight: '800',
+  },
+  materialQuantidadeZerada: {
+    color: '#b23f35',
   },
   acoesEstoque: {
     alignItems: 'stretch',
