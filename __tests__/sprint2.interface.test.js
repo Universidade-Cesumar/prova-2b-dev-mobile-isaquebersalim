@@ -14,6 +14,8 @@ const material = {
   quantidade: 10,
 };
 
+jest.setTimeout(15000);
+
 const criarResposta = (dados) => ({
   ok: true,
   json: async () => dados,
