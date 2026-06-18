@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  Keyboard,
   Platform,
   SafeAreaView,
   StyleSheet,
@@ -112,6 +113,7 @@ export default function App() {
         ...valoresAtuais,
         [material.id]: '',
       }));
+      Keyboard.dismiss();
       setMensagem('Retirada registrada com sucesso.');
     } catch (error) {
       setMensagem(error.message);
@@ -220,6 +222,7 @@ export default function App() {
       setMateriais((estoqueAtual) => [materialCadastrado, ...estoqueAtual]);
       setNome('');
       setQuantidade('');
+      Keyboard.dismiss();
       setMensagem('Material cadastrado com sucesso.');
     } catch (error) {
       setMensagem(error.message);

@@ -14,6 +14,7 @@ describe('contrato de interface da Sprint 2', () => {
     expect(appSource).toContain("method: 'PUT'");
     expect(appSource).toContain('quantidade: novaQuantidade');
     expect(appSource).toContain('const baixaDesabilitada = retiradaVazia');
+    expect(appSource).toContain('Keyboard.dismiss()');
   });
 
   test('usa DELETE e remove o material do estado local', () => {
