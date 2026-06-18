@@ -100,6 +100,10 @@ export default function App() {
           item.id === material.id ? materialAtualizado : item,
         ),
       );
+      setRetiradas((valoresAtuais) => ({
+        ...valoresAtuais,
+        [material.id]: '',
+      }));
     } catch (error) {
       setMensagem(error.message);
     } finally {
