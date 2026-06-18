@@ -172,6 +172,12 @@ export default function App() {
         onChangeText={(valor) => alterarRetirada(item.id, valor)}
         keyboardType="numeric"
       />
+      <TouchableOpacity
+        testID="btn-baixar"
+        onPress={() => baixarMaterial(item)}
+      >
+        <Text>Baixar</Text>
+      </TouchableOpacity>
     </View>
   );
 
