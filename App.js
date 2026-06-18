@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Platform,
   SafeAreaView,
@@ -146,6 +147,30 @@ export default function App() {
     } finally {
       setExcluindoId(null);
     }
+  };
+
+  const confirmarExclusao = (material) => {
+    const nomeMaterial = material.nome ?? material.name;
+    const mensagemConfirmacao = `Deseja excluir ${nomeMaterial}?`;
+
+    if (Platform.OS === 'web') {
+      if (globalThis.confirm(mensagemConfirmacao)) {
+        excluirMaterial(material);
+      }
+      return;
+    }
+
+    Alert.alert('Excluir material', mensagemConfirmacao, [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+      },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: () => excluirMaterial(material),
+      },
+    ]);
   };
 
   const cadastrarMaterial = async () => {
@@ -297,7 +322,7 @@ export default function App() {
           accessibilityRole="button"
           accessibilityLabel={`Excluir ${item.nome ?? item.name}`}
           activeOpacity={0.72}
-          onPress={() => excluirMaterial(item)}
+          onPress={() => confirmarExclusao(item)}
           disabled={baixandoId === item.id || excluindoId === item.id}
         >
           <Text style={styles.botaoExcluirTexto}>

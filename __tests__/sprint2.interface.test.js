@@ -17,6 +17,8 @@ describe('contrato de interface da Sprint 2', () => {
 
   test('usa DELETE e remove o material do estado local', () => {
     expect(appSource).toContain("method: 'DELETE'");
+    expect(appSource).toContain("Alert.alert('Excluir material'");
+    expect(appSource).toContain('globalThis.confirm(mensagemConfirmacao)');
     expect(appSource).toContain(
       'estoqueAtual.filter((item) => item.id !== material.id)',
     );
