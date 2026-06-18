@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { validarRetirada } from './src/utils/validacoes';
 
 const API_URL = 'https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais';
 const PLACEHOLDER_COLOR = '#7c8984';
