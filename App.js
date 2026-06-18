@@ -73,7 +73,32 @@ export default function App() {
       return;
     }
 
+    const novaQuantidade = Number(material.quantidade) - quantidadeRetirada;
+
+    setBaixandoId(material.id);
     setMensagem('');
+
+    try {
+      const resposta = await fetch(`${API_URL}/${material.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quantidade: novaQuantidade,
+        }),
+      });
+
+      if (!resposta.ok) {
+        throw new Error('Nao foi possivel registrar a retirada.');
+      }
+
+      await resposta.json();
+    } catch (error) {
+      setMensagem(error.message);
+    } finally {
+      setBaixandoId(null);
+    }
   };
 
   const cadastrarMaterial = async () => {
