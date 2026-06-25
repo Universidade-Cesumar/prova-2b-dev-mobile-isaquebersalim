@@ -24,6 +24,21 @@ import {
 const API_URL = 'https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais';
 const PLACEHOLDER_COLOR = '#7c8984';
 const ACESSIBILIDADE_ESTOQUE_CRITICO = 'estoque-critico';
+const MENSAGEM_ERRO_CONEXAO =
+  'Nao foi possivel conectar agora. Verifique a internet e tente novamente.';
+
+const obterMensagemErro = (error, mensagemPadrao) => {
+  const mensagemOriginal = String(error?.message ?? '');
+
+  if (
+    mensagemOriginal.toLowerCase().includes('failed to fetch') ||
+    mensagemOriginal.toLowerCase().includes('network request failed')
+  ) {
+    return MENSAGEM_ERRO_CONEXAO;
+  }
+
+  return mensagemOriginal || mensagemPadrao;
+};
 
 const isTesteSemFetchMockado = () =>
   typeof process !== 'undefined' &&
@@ -63,7 +78,9 @@ export default function App() {
       const dados = await resposta.json();
       setMateriais(Array.isArray(dados) ? dados : []);
     } catch (error) {
-      setMensagem(error.message);
+      setMensagem(
+        obterMensagemErro(error, 'Nao foi possivel carregar o estoque.'),
+      );
     } finally {
       setCarregando(false);
     }
@@ -122,7 +139,9 @@ export default function App() {
       Keyboard.dismiss();
       setMensagem('Retirada registrada com sucesso.');
     } catch (error) {
-      setMensagem(error.message);
+      setMensagem(
+        obterMensagemErro(error, 'Nao foi possivel registrar a retirada.'),
+      );
     } finally {
       setBaixandoId(null);
     }
@@ -151,7 +170,9 @@ export default function App() {
       });
       setMensagem('Material excluido com sucesso.');
     } catch (error) {
-      setMensagem(error.message);
+      setMensagem(
+        obterMensagemErro(error, 'Nao foi possivel excluir o material.'),
+      );
     } finally {
       setExcluindoId(null);
     }
@@ -231,7 +252,9 @@ export default function App() {
       Keyboard.dismiss();
       setMensagem('Material cadastrado com sucesso.');
     } catch (error) {
-      setMensagem(error.message);
+      setMensagem(
+        obterMensagemErro(error, 'Nao foi possivel cadastrar o material.'),
+      );
     } finally {
       setSalvando(false);
     }
