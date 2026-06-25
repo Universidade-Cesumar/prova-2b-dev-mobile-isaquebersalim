@@ -257,6 +257,10 @@ export default function App() {
       ),
     [materiaisFiltrados],
   );
+  const totalCriticos = useMemo(
+    () => materiaisFiltrados.filter(isEstoqueCritico).length,
+    [materiaisFiltrados],
+  );
 
   const exibindoCarregamentoInicial = carregando && materiais.length === 0;
   const mensagemListaVazia = busca.trim()
@@ -473,6 +477,10 @@ export default function App() {
             <View style={styles.divisorResumo} />
             <Text style={styles.totalUnidades}>
               Unidades em estoque: {totalUnidades}
+            </Text>
+            <View style={styles.divisorResumo} />
+            <Text style={styles.totalCriticos}>
+              Criticos: {totalCriticos}
             </Text>
           </View>
 
@@ -708,6 +716,11 @@ const styles = StyleSheet.create({
     color: '#38534b',
     fontSize: 14,
     fontWeight: '500',
+  },
+  totalCriticos: {
+    color: '#9b432f',
+    fontSize: 14,
+    fontWeight: '700',
   },
   botaoAtualizar: {
     backgroundColor: '#fff',
