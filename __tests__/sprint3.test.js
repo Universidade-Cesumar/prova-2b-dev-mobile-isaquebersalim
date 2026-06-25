@@ -28,4 +28,10 @@ describe('Sprint 3 - Dashboard e alertas', () => {
     expect(appSource).toContain("ACESSIBILIDADE_ESTOQUE_CRITICO = 'estoque-critico'");
     expect(appSource).toContain('styles.materialItemCritico');
   });
+
+  test('deve manter tratamento amigavel para falhas de rede', () => {
+    expect(appSource).toContain('MENSAGEM_ERRO_CONEXAO');
+    expect(appSource).toContain('obterMensagemErro');
+    expect((appSource.match(/catch \(error\)/g) ?? []).length).toBeGreaterThanOrEqual(4);
+  });
 });
