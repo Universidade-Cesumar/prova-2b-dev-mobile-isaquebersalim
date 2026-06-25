@@ -13,6 +13,10 @@ Aplicativo mobile para controle inicial de estoque do almoxarifado de enfermagem
 - Baixa rapida de estoque diretamente em cada material.
 - Exclusao permanente de materiais no servidor.
 - Bloqueio de retiradas invalidas ou maiores que o saldo atual.
+- Filtro de pesquisa em tempo real por nome do material.
+- Dashboard com total de itens listados, unidades e itens criticos.
+- Alerta visual para materiais com quantidade menor que 10.
+- Tratamento amigavel para falhas de conexao com a API.
 
 ## Contrato da Sprint 1
 
@@ -34,6 +38,15 @@ Cada material da lista possui:
 A funcao pura `validarRetirada(estoqueAtual, quantidadeRetirada)` esta em
 `src/utils/validacoes.js`. Ela impede quantidades negativas, zeradas, nao
 numericas ou superiores ao estoque atual.
+
+## Contrato da Sprint 3
+
+Componentes e comportamentos obrigatorios:
+
+- `input-busca`: campo de pesquisa em tempo real.
+- `total-itens`: totalizador que acompanha a lista filtrada.
+- `accessibilityLabel="estoque-critico"`: aplicado dinamicamente ao card de materiais com quantidade menor que 10.
+- Blocos `try/catch`: usados nas requisicoes `GET`, `POST`, `PUT` e `DELETE` para manter a tela estavel em caso de falha de rede.
 
 ## Tecnologias
 
