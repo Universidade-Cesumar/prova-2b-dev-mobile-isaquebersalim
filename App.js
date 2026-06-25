@@ -316,12 +316,14 @@ export default function App() {
           <View
             style={[
               styles.quantidadeContainer,
+              estoqueCritico && styles.quantidadeContainerCritica,
               estoqueZerado && styles.quantidadeContainerZerada,
             ]}
           >
             <Text
               style={[
                 styles.materialQuantidade,
+                estoqueCritico && styles.materialQuantidadeCritica,
                 estoqueZerado && styles.materialQuantidadeZerada,
               ]}
             >
@@ -901,10 +903,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fde5df',
     borderColor: '#d98a7d',
   },
+  quantidadeContainerCritica: {
+    backgroundColor: '#fff0e7',
+    borderColor: '#dda179',
+  },
   materialQuantidade: {
     color: '#176b57',
     fontSize: 20,
     fontWeight: '800',
+  },
+  materialQuantidadeCritica: {
+    color: '#9b432f',
   },
   materialQuantidadeZerada: {
     color: '#b23f35',
