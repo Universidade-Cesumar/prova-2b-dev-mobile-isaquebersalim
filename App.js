@@ -552,7 +552,9 @@ export default function App() {
           onChangeText={setBusca}
           autoCapitalize="none"
           autoCorrect={false}
+          clearButtonMode="while-editing"
           returnKeyType="search"
+          onSubmitEditing={Keyboard.dismiss}
         />
 
         {mensagem ? (
