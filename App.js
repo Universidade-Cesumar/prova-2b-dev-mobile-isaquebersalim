@@ -507,7 +507,11 @@ export default function App() {
               layoutCompacto && styles.resumoDadosCompacto,
             ]}
           >
-            <Text testID="total-itens" style={styles.totalItens}>
+            <Text
+              testID="total-itens"
+              style={styles.totalItens}
+              accessibilityLabel={`Total de materiais listados: ${materiaisFiltrados.length}`}
+            >
               Total de itens: {materiaisFiltrados.length}
             </Text>
             <View
