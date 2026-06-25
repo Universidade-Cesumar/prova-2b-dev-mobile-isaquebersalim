@@ -113,5 +113,15 @@ Para executar os testes:
 npm test
 ```
 
-A suite automatizada cobre as regras de retirada e os fluxos de `PUT` e
-`DELETE` da Sprint 2.
+A suite automatizada cobre as regras de retirada, o contrato visual da
+Sprint 3 e os fluxos de `PUT` e `DELETE`.
+
+## Roteiro de verificacao
+
+- Abrir o aplicativo e conferir se a lista carrega os materiais da MockAPI.
+- Digitar no campo `Buscar material` e verificar o total em `total-itens`.
+- Conferir se itens com quantidade menor que 10 ficam destacados como estoque critico.
+- Cadastrar um material novo e verificar se ele aparece na lista.
+- Informar uma quantidade de retirada valida e confirmar a baixa.
+- Tentar retirar uma quantidade maior que o saldo e conferir o bloqueio.
+- Excluir um material somente depois da confirmacao.
