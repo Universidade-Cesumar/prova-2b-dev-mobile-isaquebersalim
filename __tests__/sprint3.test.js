@@ -27,6 +27,7 @@ describe('Sprint 3 - Dashboard e alertas', () => {
     expect(isEstoqueCritico({ quantidade: 9 })).toBe(true);
     expect(appSource).toContain("ACESSIBILIDADE_ESTOQUE_CRITICO = 'estoque-critico'");
     expect(appSource).toContain('styles.materialItemCritico');
+    expect(appSource).toContain('Material com menos de dez unidades no estoque.');
   });
 
   test('deve manter tratamento amigavel para falhas de rede', () => {
