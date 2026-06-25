@@ -125,3 +125,13 @@ Sprint 3 e os fluxos de `PUT` e `DELETE`.
 - Informar uma quantidade de retirada valida e confirmar a baixa.
 - Tentar retirar uma quantidade maior que o saldo e conferir o bloqueio.
 - Excluir um material somente depois da confirmacao.
+
+## Capturas de tela
+
+Dashboard com lista e totalizadores:
+
+![Dashboard do almoxarifado](docs/screenshots/dashboard-web.png)
+
+Filtro de busca em tempo real:
+
+![Filtro de busca do almoxarifado](docs/screenshots/filtro-web.png)
