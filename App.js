@@ -16,12 +16,14 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { validarRetirada } from './src/utils/validacoes';
 import {
+  isEstoqueCritico,
   obterNomeMaterial,
   obterQuantidadeMaterial,
 } from './src/utils/estoque';
 
 const API_URL = 'https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais';
 const PLACEHOLDER_COLOR = '#7c8984';
+const ACESSIBILIDADE_ESTOQUE_CRITICO = 'estoque-critico';
 
 const isTesteSemFetchMockado = () =>
   typeof process !== 'undefined' &&
@@ -265,6 +267,7 @@ export default function App() {
   const renderMaterial = ({ item }) => {
     const nomeMaterial = obterNomeMaterial(item);
     const quantidadeMaterial = obterQuantidadeMaterial(item);
+    const estoqueCritico = isEstoqueCritico(item);
     const estoqueZerado = quantidadeMaterial === 0;
     const retiradaVazia = !String(retiradas[item.id] ?? '').trim();
     const acaoEmAndamento =
@@ -275,8 +278,12 @@ export default function App() {
       <View
         style={[
           styles.materialItem,
+          estoqueCritico && styles.materialItemCritico,
           estoqueZerado && styles.materialItemZerado,
         ]}
+        accessibilityLabel={
+          estoqueCritico ? ACESSIBILIDADE_ESTOQUE_CRITICO : undefined
+        }
       >
         <View style={styles.materialCabecalho}>
           <View style={styles.materialInfo}>
@@ -800,6 +807,11 @@ const styles = StyleSheet.create({
   materialItemZerado: {
     backgroundColor: '#fff8f6',
     borderColor: '#cf6a5d',
+    borderLeftWidth: 4,
+  },
+  materialItemCritico: {
+    backgroundColor: '#fff3ef',
+    borderColor: '#d87a57',
     borderLeftWidth: 4,
   },
   materialCabecalho: {
