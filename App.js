@@ -312,6 +312,11 @@ export default function App() {
         accessibilityLabel={
           estoqueCritico ? ACESSIBILIDADE_ESTOQUE_CRITICO : undefined
         }
+        accessibilityHint={
+          estoqueCritico
+            ? 'Material com menos de dez unidades no estoque.'
+            : undefined
+        }
       >
         <View style={styles.materialCabecalho}>
           <View style={styles.materialInfo}>
