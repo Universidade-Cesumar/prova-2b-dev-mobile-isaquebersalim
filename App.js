@@ -15,6 +15,10 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { validarRetirada } from './src/utils/validacoes';
+import {
+  obterNomeMaterial,
+  obterQuantidadeMaterial,
+} from './src/utils/estoque';
 
 const API_URL = 'https://6a2b395ab687a7d5cbc4f9df.mockapi.io/materiais';
 const PLACEHOLDER_COLOR = '#7c8984';
@@ -239,14 +243,14 @@ export default function App() {
     }
 
     return materiais.filter((material) =>
-      String(material.nome ?? material.name ?? '').toLowerCase().includes(termo),
+      obterNomeMaterial(material).toLowerCase().includes(termo),
     );
   }, [busca, materiais]);
 
   const totalUnidades = useMemo(
     () =>
       materiaisFiltrados.reduce(
-        (total, material) => total + Number(material.quantidade ?? 0),
+        (total, material) => total + obterQuantidadeMaterial(material),
         0,
       ),
     [materiaisFiltrados],
@@ -259,7 +263,9 @@ export default function App() {
   const mensagemSucesso = mensagem.toLowerCase().includes('sucesso');
 
   const renderMaterial = ({ item }) => {
-    const estoqueZerado = Number(item.quantidade) === 0;
+    const nomeMaterial = obterNomeMaterial(item);
+    const quantidadeMaterial = obterQuantidadeMaterial(item);
+    const estoqueZerado = quantidadeMaterial === 0;
     const retiradaVazia = !String(retiradas[item.id] ?? '').trim();
     const acaoEmAndamento =
       baixandoId === item.id || excluindoId === item.id;
@@ -280,7 +286,7 @@ export default function App() {
                 estoqueZerado && styles.materialNomeZerado,
               ]}
             >
-              {item.nome ?? item.name}
+              {nomeMaterial}
             </Text>
             <Text
               style={[
@@ -303,7 +309,7 @@ export default function App() {
                 estoqueZerado && styles.materialQuantidadeZerada,
               ]}
             >
-              {item.quantidade ?? 0}
+              {quantidadeMaterial}
             </Text>
           </View>
         </View>
@@ -320,7 +326,7 @@ export default function App() {
               styles.inputRetirada,
               !layoutCompacto && styles.inputRetiradaDesktop,
             ]}
-            accessibilityLabel={`Quantidade a retirar de ${item.nome ?? item.name}`}
+            accessibilityLabel={`Quantidade a retirar de ${nomeMaterial}`}
             placeholder="Retirar"
             placeholderTextColor={PLACEHOLDER_COLOR}
             selectionColor="#176b57"
@@ -338,7 +344,7 @@ export default function App() {
               baixaDesabilitada && styles.botaoDesabilitado,
             ]}
             accessibilityRole="button"
-            accessibilityLabel={`Baixar estoque de ${item.nome ?? item.name}`}
+            accessibilityLabel={`Baixar estoque de ${nomeMaterial}`}
             activeOpacity={0.82}
             onPress={() => baixarMaterial(item)}
             disabled={baixaDesabilitada}
@@ -354,7 +360,7 @@ export default function App() {
               acaoEmAndamento && styles.botaoDesabilitado,
             ]}
             accessibilityRole="button"
-            accessibilityLabel={`Excluir ${item.nome ?? item.name}`}
+            accessibilityLabel={`Excluir ${nomeMaterial}`}
             activeOpacity={0.72}
             onPress={() => confirmarExclusao(item)}
             disabled={acaoEmAndamento}
