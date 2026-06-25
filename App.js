@@ -474,11 +474,21 @@ export default function App() {
             <Text testID="total-itens" style={styles.totalItens}>
               Total de itens: {materiaisFiltrados.length}
             </Text>
-            <View style={styles.divisorResumo} />
+            <View
+              style={[
+                styles.divisorResumo,
+                layoutCompacto && styles.divisorResumoCompacto,
+              ]}
+            />
             <Text style={styles.totalUnidades}>
               Unidades em estoque: {totalUnidades}
             </Text>
-            <View style={styles.divisorResumo} />
+            <View
+              style={[
+                styles.divisorResumo,
+                layoutCompacto && styles.divisorResumoCompacto,
+              ]}
+            />
             <Text style={styles.totalCriticos}>
               Criticos: {totalCriticos}
             </Text>
@@ -699,7 +709,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   resumoDadosCompacto: {
-    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    gap: 6,
   },
   totalItens: {
     color: '#123b34',
@@ -711,6 +723,9 @@ const styles = StyleSheet.create({
     height: 22,
     marginHorizontal: 12,
     width: 1,
+  },
+  divisorResumoCompacto: {
+    display: 'none',
   },
   totalUnidades: {
     color: '#38534b',
