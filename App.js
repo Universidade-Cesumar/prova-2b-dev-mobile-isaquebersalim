@@ -307,6 +307,11 @@ export default function App() {
             >
               Quantidade atual
             </Text>
+            {estoqueCritico ? (
+              <Text style={styles.materialAlerta}>
+                {estoqueZerado ? 'Estoque zerado' : 'Estoque critico'}
+              </Text>
+            ) : null}
           </View>
           <View
             style={[
@@ -867,6 +872,19 @@ const styles = StyleSheet.create({
   materialDetalheZerado: {
     color: '#a25047',
     fontWeight: '600',
+  },
+  materialAlerta: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#ffe1d7',
+    borderColor: '#e09a7f',
+    borderRadius: 8,
+    borderWidth: 1,
+    color: '#943d2b',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   quantidadeContainer: {
     alignItems: 'center',
