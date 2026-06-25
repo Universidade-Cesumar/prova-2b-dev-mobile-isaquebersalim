@@ -286,8 +286,9 @@ export default function App() {
   );
 
   const exibindoCarregamentoInicial = carregando && materiais.length === 0;
-  const mensagemListaVazia = busca.trim()
-    ? 'Nenhum material encontrado.'
+  const termoBusca = busca.trim();
+  const mensagemListaVazia = termoBusca
+    ? `Nenhum material encontrado para "${termoBusca}".`
     : 'Nenhum material cadastrado.';
   const mensagemSucesso = mensagem.toLowerCase().includes('sucesso');
 
