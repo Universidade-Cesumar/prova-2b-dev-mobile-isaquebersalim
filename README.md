@@ -88,14 +88,24 @@ Instale as dependencias:
 npm install
 ```
 
-Inicie o Expo:
+Inicie o Expo para abrir o QR Code:
 
 ```bash
 npm start
 ```
 
-Para testar no celular, abra o aplicativo Expo Go e escaneie o QR Code exibido no terminal.
-O celular e o computador precisam estar conectados na mesma rede.
+Para testar no celular:
+
+1. Instale o aplicativo Expo Go no Android ou iOS.
+2. Mantenha o celular e o computador na mesma rede Wi-Fi.
+3. Execute `npm start`.
+4. Escaneie o QR Code exibido no terminal ou na pagina do Expo.
+
+Para testar no navegador:
+
+```bash
+npm run web
+```
 
 Para executar os testes:
 
